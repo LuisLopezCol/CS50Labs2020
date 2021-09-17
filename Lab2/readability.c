@@ -36,7 +36,7 @@ int main(void)
     float S = sentences*100/words;
     int index = round(0.0588 * L - 0.296 * S - 15.8);
 
-    //Compute grade
+    //Compute grade"
     if (index < 1)
     {
         string grade = "Before Grade 1";
