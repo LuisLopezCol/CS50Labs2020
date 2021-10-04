@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max voters and candidates
 #define MAX_VOTERS 100
@@ -14,8 +15,7 @@ typedef struct
     string name;
     int votes;
     bool eliminated;
-}
-candidate;
+} candidate;
 
 // Array of candidates
 candidate candidates[MAX_CANDIDATES];
@@ -128,13 +128,31 @@ int main(int argc, string argv[])
 bool vote(int voter, int rank, string name)
 {
     // TODO
+    for (int j = 0; j < candidate_count; j++)
+    {
+        if (strcmp(candidates[j].name, name) == 0)
+        {
+            preferences[voter][rank] = j;
+            return true;
+        }
+    }
     return false;
 }
 
 // Tabulate votes for non-eliminated candidates
 void tabulate(void)
 {
-    // TODO
+    for (int i = 0; i < voter_count; i++)
+    {
+        for (int j = 0; j <= candidate_count; j++) //Iterate in the ranking looking for the not eliminated winner
+        {
+            if (!candidates[preferences[i][j]].eliminated)
+            {
+                candidates[preferences[i][j]].votes += 1;
+                break;
+            }
+        }
+    }
     return;
 }
 
@@ -142,6 +160,14 @@ void tabulate(void)
 bool print_winner(void)
 {
     // TODO
+    for (int j = 0; j < candidate_count; j++)
+    {
+        if (candidates[j].votes > (voter_count / 2))
+        {
+            printf("%s\n", candidates[j].name);
+            return true;
+        }
+    }
     return false;
 }
 
@@ -149,19 +175,40 @@ bool print_winner(void)
 int find_min(void)
 {
     // TODO
-    return 0;
+    int loser = MAX_VOTERS;
+    for (int j = 0; j < candidate_count; j++)
+    {
+        if (candidates[j].votes < loser && !candidates[j].eliminated)
+        {
+            loser = candidates[j].votes;
+        }
+    }
+    return loser;
 }
 
 // Return true if the election is tied between all candidates, false otherwise
 bool is_tie(int min)
 {
-    // TODO
-    return false;
+    for (int j = 0; j < candidate_count; j++)
+    {
+        if (candidates[j].votes != min && !candidates[j].eliminated)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 // Eliminate the candidate (or candidates) in last place
 void eliminate(int min)
 {
     // TODO
+    for (int j = 0; j < candidate_count; j++)
+    {
+        if (candidates[j].votes == min && !candidates[j].eliminated)
+        {
+            candidates[j].eliminated = true;
+        }
+    }
     return;
 }
